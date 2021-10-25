@@ -1,0 +1,6 @@
+framework module Pods_OCS_OCSUITests {
+  umbrella header "Pods-OCS-OCSUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}

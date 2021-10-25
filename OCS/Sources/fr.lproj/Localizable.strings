@@ -1,0 +1,9 @@
+/* 
+  Localizable.strings
+  OCS
+
+  Created by Nizar Elhraiech on 24/10/2021.
+  
+*/
+"NoConnection"= "verifier votre connection";
+"ErrorServer" = "Error du serveur";
