@@ -34,3 +34,9 @@ func hideLoader (view: UIView) {
     
 }
 
+enum NetworkError: Error {
+    case unauthorised
+    case timeout
+    case serverError
+    case invalidResponse
+}

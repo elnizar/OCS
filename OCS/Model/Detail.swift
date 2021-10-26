@@ -8,19 +8,11 @@
 import Foundation
 struct Detail : Decodable {
     
-    let content : Content
-    
-    init(content : Content) {
-        self.content = content
-    }
+    let content : Content?
 
     init(from decoder : Decoder ) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
-        
         content = try! container.decode(Content.self, forKey: .content)
-
-
     }
 
 }

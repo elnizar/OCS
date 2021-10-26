@@ -22,24 +22,6 @@ struct Content : Decodable{
     let season : [Season]?
     let pitch : String?
 
-    init(title: [Title] , subtitle : String , subtitlefocus : String , highlefticon :String , highrighticon : String , lowrightinfo : String , imageurl : String , fullscreenimageurl : String , id : String , detaillink : String , duration : String , playinfoid : Playinfoid , season : [Season], pitch : String) {
-        self.title = title
-        self.subtitle = subtitle
-        self.subtitlefocus = subtitlefocus
-        self.highlefticon = highlefticon
-        self.highrighticon = highrighticon
-        self.lowrightinfo = lowrightinfo
-        self.imageurl = imageurl
-        self.fullscreenimageurl = fullscreenimageurl
-        self.id = id
-        self.detaillink = detaillink
-        self.duration = duration
-        self.playinfoid = playinfoid
-        self.season = season
-        self.pitch = pitch
-
-    }
-    
     init(from decoder : Decoder ) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         

@@ -17,37 +17,29 @@ class HomeViewModel {
     var programme = PassthroughSubject<Programme,Never>()
     var programmeTitle = CurrentValueSubject<String,Never>("")
     private let httpManager = HTTPManager()
-    let programmeUrl = "https://api.ocs.fr/apps/v2/contents?search=title%3D"
+    private let homeService = HomeService()
+    var bag = Set<AnyCancellable>()
     
     func getProgramme() {
         if Reachability.isConnectedToNetwork(){
-            getProgrammeResponseModel(programmeTitle: programmeTitle.value, completionHandler: {
+            guard let url = encodeUrl(title: programmeTitle.value)else {
+                return
+            }
+            homeService.getProgrmmes(urlDetail: url).sink(receiveCompletion: {
+                completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            }, receiveValue: {
                 response in
                 self.programme.send(response)
-            })
+                
+            }).store(in: &bag)
         } else {
             connexion.send(true)
-        }
-    }
-    
-    func getProgrammeResponseModel(programmeTitle : String ,completionHandler: @escaping (Programme) -> Void) {
-        if let url = URL(string: programmeUrl + programmeTitle) {
-            httpManager.get(url: url, completionBlock: {
-                response,error,urlResponse  in
-                
-                guard let res = response else{
-                    return
-                }
-                DispatchQueue.main.async {
-                    let decode = JSONDecoder()
-                        
-                    let data = try! decode.decode(Programme.self, from: res)
-                    completionHandler(data)
-                }
-
-            })
-        }else{
-            errorFromServer.send(true)
         }
     }
     
@@ -56,15 +48,22 @@ class HomeViewModel {
     }
     
     func loadImage(imageUrl : String , completionHandler: @escaping (Data?) -> Void){
-        
         guard let url = URL(string: imageUrl) else { return }
-        
         httpManager.downloadImage(forURL: url, completion: {
             result in
-                guard let data = try? result.get() else {
-                    return
-                }
+            guard let data = try? result.get() else {
+                return
+            }
             completionHandler(data)
         })
+    }
+    
+    func encodeUrl(title : String) -> URL? {
+        guard let urlEncoded = title.addingPercentEncoding(withAllowedCharacters: .alphanumerics) else {
+            return nil
+        }
+        let fullUrl = Constants.programmeUrl + urlEncoded
+        return URL(string: fullUrl)
+        
     }
 }

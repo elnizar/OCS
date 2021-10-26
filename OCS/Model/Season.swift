@@ -8,8 +8,4 @@
 import Foundation
 struct Season : Decodable{
     var pitch : String?
-    
-    init(pitch : String) {
-        self.pitch = pitch
-    }
 }

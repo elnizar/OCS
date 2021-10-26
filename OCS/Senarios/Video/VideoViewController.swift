@@ -41,7 +41,9 @@ class VideoViewController: UIViewController {
         subtitleLabel.text = viewModel.subtitle.value
         viewModel.pitch.sink(receiveValue: {
             pitch in
-            self.pitchView.text = pitch
+            DispatchQueue.main.async {
+                self.pitchView.text = pitch
+            }
         }).store(in: &bag)
         viewModel.connexion.sink(receiveValue: {
             isError  in
@@ -53,7 +55,9 @@ class VideoViewController: UIViewController {
             if res{
                 showLoader(view: self.view)
             }else{
-                hideLoader(view: self.view)
+                DispatchQueue.main.async {
+                    hideLoader(view: self.view)
+                }
             }
         }).store(in: &bag)
         viewModel.getDetailsSerie()
@@ -68,5 +72,5 @@ class VideoViewController: UIViewController {
             playerViewController.player!.play()
         }
     }
-
+    
 }

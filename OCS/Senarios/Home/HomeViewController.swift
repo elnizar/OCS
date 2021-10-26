@@ -40,7 +40,7 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
     private func setViewModel(_ viewModel: HomeViewModel) {
         self.viewModel = viewModel
     }
-
+    
     private func bindViewModel() {
         viewModel.errorFromServer.sink(receiveValue: {
             isError  in
@@ -60,14 +60,18 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
             programme in
             
             self.program = programme
-            self.programView.reloadData()
-            
+            DispatchQueue.main.async {
+                self.programView.reloadData()
+            }
         }).store(in: &bag)
     }
     
     // MARK: collectionView Method
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let programme = program?.count else{
+        guard let program = program else {
+            return 0
+        }
+        guard let programme = program.count else{
             return 0
         }
         return programme
@@ -75,15 +79,27 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = programView.dequeueReusableCell(withReuseIdentifier: "programmeViewCell", for: indexPath) as! ProgrammeCollectionViewCell
-        guard let title = program?.contents![indexPath.row].title![0].value else {
+        guard let program = program else {
             return cell
         }
-        guard let subTitle = program?.contents![indexPath.row].subtitle else {
+        guard let contents = program.contents else {
+            return cell
+        }
+        
+        guard let titleT = contents[indexPath.row].title else {
+            return cell
+        }
+        
+        
+        guard let title = titleT[0].value else {
+            return cell
+        }
+        guard let subTitle = contents[indexPath.row].subtitle else {
             return cell
         }
         cell.titleLabel.text = title
         cell.subtitleLabel.text = subTitle
-        guard let image = program?.contents![indexPath.row].imageurl else {
+        guard let image = contents[indexPath.row].imageurl else {
             return cell
         }
         let url = Constants.API_URL + image
@@ -100,7 +116,7 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
                 DispatchQueue.main.async {
                     cell.imageView.image = UIImage(data: dataImg)
                 }
-
+                
             }
         }
         return cell
@@ -122,7 +138,7 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0
     }
-        
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if let titleCheck = program?.contents![indexPath.row].title![0].value {
             titleT = titleCheck
@@ -135,7 +151,7 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
             urlProgram = Constants.API_URL + urlPr
         }
         performSegue(withIdentifier: "vcToVideo", sender: nil)
-
+        
     }
     
     // MARK: searchBar Method
@@ -148,16 +164,16 @@ class HomeViewController: UIViewController , UICollectionViewDataSource , UIColl
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.destination is VideoViewController {
             let videoVM = self.viewModel.VideoVM(subtitle: subTitle, titleT: titleT, urlPrg: urlProgram)
-
+            
             let vc = segue.destination as? VideoViewController
             vc?.initViewMode(viewModel: videoVM)
         }
     }
-
     
-
     
-
+    
+    
+    
     
 }
 

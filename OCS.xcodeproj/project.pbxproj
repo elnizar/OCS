@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,6 +18,8 @@
 		9617855B2725C26400CC72CB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9617855D2725C26400CC72CB /* Localizable.strings */; };
 		961785662725C28D00CC72CB /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 961785682725C28D00CC72CB /* Localizable.strings */; };
 		9617856D2725D5A000CC72CB /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9617856C2725D5A000CC72CB /* Constants.swift */; };
+		9656C09227284B410021063F /* HomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9656C09127284B410021063F /* HomeService.swift */; };
+		9656C09D27284B770021063F /* VideoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9656C09C27284B770021063F /* VideoService.swift */; };
 		966A0F00272412B000647F9D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966A0EFF272412B000647F9D /* AppDelegate.swift */; };
 		966A0F04272412B000647F9D /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 966A0F03272412B000647F9D /* HomeViewController.swift */; };
 		966A0F07272412B000647F9D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 966A0F05272412B000647F9D /* Main.storyboard */; };
@@ -76,6 +78,8 @@
 		9617855C2725C26400CC72CB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		961785672725C28D00CC72CB /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9617856C2725D5A000CC72CB /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9656C09127284B410021063F /* HomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeService.swift; sourceTree = "<group>"; };
+		9656C09C27284B770021063F /* VideoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoService.swift; sourceTree = "<group>"; };
 		966A0EFC272412B000647F9D /* OCS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OCS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		966A0EFF272412B000647F9D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		966A0F03272412B000647F9D /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
@@ -145,7 +149,6 @@
 				577C94E5281C08669CB094FC /* Pods-OCSTests.debug.xcconfig */,
 				882538B1A9CF44B663569ACD /* Pods-OCSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -185,6 +188,15 @@
 			path = Sources;
 			sourceTree = "<group>";
 		};
+		9656C09027284B2F0021063F /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				9656C09127284B410021063F /* HomeService.swift */,
+				9656C09C27284B770021063F /* VideoService.swift */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
 		966A0EF3272412B000647F9D = {
 			isa = PBXGroup;
 			children = (
@@ -210,6 +222,7 @@
 		966A0EFE272412B000647F9D /* OCS */ = {
 			isa = PBXGroup;
 			children = (
+				9656C09027284B2F0021063F /* Service */,
 				961785552725C1E800CC72CB /* Sources */,
 				961785422725932600CC72CB /* Manager */,
 				96C3B6A42724232A008082DA /* Extension */,
@@ -564,9 +577,11 @@
 				96C3B6E0272483E0008082DA /* Detail.swift in Sources */,
 				96C3B6E527248439008082DA /* Season.swift in Sources */,
 				966A0F4E27241FE100647F9D /* Title.swift in Sources */,
+				9656C09D27284B770021063F /* VideoService.swift in Sources */,
 				96C3B6D427245D7E008082DA /* ProgrammeCollectionViewCell.swift in Sources */,
 				96C3B6A627242395008082DA /* Programme+Extension.swift in Sources */,
 				961785362725921400CC72CB /* VideoViewModel.swift in Sources */,
+				9656C09227284B410021063F /* HomeService.swift in Sources */,
 				9611A4132725E855006C9399 /* Utilities.swift in Sources */,
 				966A0F00272412B000647F9D /* AppDelegate.swift in Sources */,
 			);

@@ -19,7 +19,9 @@ class VideoViewModel {
     var connexion = CurrentValueSubject<Bool,Never>(false)
     var isLoading = PassthroughSubject<Bool,Never>()
     private let httpManager = HTTPManager()
-
+    private let videoService = VideoService()
+    var bag = Set<AnyCancellable>()
+    
     init(subtitle: String, titleT : String, urlPrg : String) {
         self.subtitle.send(subtitle)
         self.titleT.send(titleT)
@@ -31,52 +33,41 @@ class VideoViewModel {
     func getDetailsSerie() {
         if Reachability.isConnectedToNetwork(){
             isLoading.send(true)
-            getDetailsSerieResponseModel(urlPrg: urlPrg.value, completionHandler: {
-                response,error  in
-                guard let response = response else{
-                    self.isLoading.send(false)
+            guard let url = encodeUrl(urlDetail: urlPrg.value)else {
+                return
+            }
+            videoService.fetch(urlDetail: url).sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+                
+            }, receiveValue: { response in
+                self.isLoading.send(false)
+                guard let content = response.content else {
                     return
                 }
-                self.isLoading.send(false)
-                self.pitch.send(response)
-            })
+                if let season = content.season {
+                    if let pitch = season[0].pitch {
+                        self.pitch.send(pitch)
+                    }
+                }else{
+                    guard let pitch = content.pitch else {
+                        return
+                    }
+                    self.pitch.send(pitch)
+                }
+            }).store(in: &bag)
             
         } else {
             connexion.send(true)
         }
     }
     
-    func getDetailsSerieResponseModel(urlPrg : String , completionHandler: @escaping (String?,Bool?) -> Void)  {
-        if let url = URL(string: urlPrg){
-            httpManager.get(url: url, completionBlock: {
-                response,error,urlResponse  in
-                
-                guard let res = response else{
-                    completionHandler(nil, true)
-                    return
-                }
-                DispatchQueue.main.async {
-                    let decode = JSONDecoder()
-                    
-                    let data = try! decode.decode(Detail.self, from: res)
-                    
-                    if let _ = data.content.season {
-                        if let pitch = data.content.season![0].pitch {
-                            completionHandler(pitch, false)
-                        }
-                    }
-                    else{
-                        guard let pitch = data.content.pitch else {
-                            return
-                        }
-                        completionHandler(pitch, false)
-                    }
-                }
-
-            })
-
-        }else{
-            completionHandler(nil, true)
-        }
+    func encodeUrl(urlDetail : String) -> URL? {
+        return URL(string: urlDetail)
+        
     }
 }

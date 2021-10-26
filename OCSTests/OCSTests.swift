@@ -6,55 +6,83 @@
 //
 
 import XCTest
+import Combine
 @testable import OCS
 
 class OCSTests: XCTestCase {
-    let homeViewMode = HomeViewModel()
-    let videViewMode = VideoViewModel()
-
-    func testGetProgramme() {
-        let expectation = XCTestExpectation(description: "Download some data")
-
-        homeViewMode.getProgrammeResponseModel(programmeTitle: "", completionHandler: {
-            res in
-            XCTAssertNil(res, "No data was downloaded.")
-            expectation.fulfill()
-
-        })
+    let homeService = HomeService()
+    let videoService = VideoService()
+    let homeVm = HomeViewModel()
+    let videoVm = VideoViewModel()
+    
+    private var cancellables: Set<AnyCancellable>!
+    
+    override func setUp() {
+        super.setUp()
+        cancellables = []
+    }
+    
+    func testUrlIsNil() {
+        let result = homeVm.encodeUrl(title: "")
+        XCTAssertNotNil(result, "Not nil")
+    }
+    
+    func testUrl() {
+        let result = homeVm.encodeUrl(title: "game of thrones")
+        guard let res = result else {
+            return
+        }
+        XCTAssertEqual(res.absoluteString, "https://api.ocs.fr/apps/v2/contents?search=title%3Dgame%20of%20thrones", res.absoluteString)
         
-        homeViewMode.getProgrammeResponseModel(programmeTitle: "dsadas", completionHandler: {
-            res in
-            XCTAssertNotNil(res, "data was downloaded.")
-            expectation.fulfill()
-
-
-        })
-
-        wait(for: [expectation], timeout: 10.0)
-
-
+    }
+    
+    func testGetProgramme() {
+        let result = homeVm.encodeUrl(title: "game of thrones")
+        guard let res = result else {
+            return
+        }
+        
+        let expectation = XCTestExpectation(description: "Download some data")
+        homeService.getProgrmmes(urlDetail: res)
+            .sink(receiveCompletion: { completion in
+                switch completion {
+                case .finished:
+                    break
+                case .failure(let encounteredError):
+                    break
+                }
+                expectation.fulfill()
+            }, receiveValue: { value in
+                XCTAssertNotNil(res, "data was downloaded.")
+                
+            })
+            .store(in: &cancellables)
+        
     }
     
     func testGetDetailsSerie() {
         let expectation = XCTestExpectation(description: "Download some data")
-
-        videViewMode.getDetailsSerieResponseModel(urlPrg: "String", completionHandler: {
-            res,error  in
-            XCTAssertNil(res, "No data was downloaded.")
+        let result = videoVm.encodeUrl(urlDetail: "https://api.ocs.fr/apps/v2/details/serie/PSGAMEOFTHRW0058624")
+        guard let res = result else {
+            return
+        }
+        videoService.fetch(urlDetail: res).sink(receiveCompletion: {
+            completion in
+            switch completion {
+            case .finished:
+                break
+            case .failure(let encounteredError):
+                break
+            }
             expectation.fulfill()
-
-        })
-        
-        videViewMode.getDetailsSerieResponseModel(urlPrg: "https://api.ocs.fr/apps/v2/details/serie/PSGAMEOFTHRW0058624", completionHandler: {
-            res,error  in
+            
+        }, receiveValue: {
+            res in
             XCTAssertNotNil(res, "data was downloaded.")
-            expectation.fulfill()
-
-        })
+            
+        }).store(in: &cancellables)
         
         wait(for: [expectation], timeout: 10.0)
-
+        
     }
-    
-
 }
